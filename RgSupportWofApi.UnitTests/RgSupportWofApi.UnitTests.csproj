@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="xunit" Version="2.3.1" />
+    <PackageReference Include="Moq" Version="4.7.145" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Data\" />
+    <Folder Include="Data\Repositories\" />
+    <Folder Include="Model\" />
+    <Folder Include="Services\" />
+    <Folder Include="TestHelpers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\RgSupportWofApi.Application\RgSupportWofApi.Application.csproj" />
+  </ItemGroup>
+</Project>
