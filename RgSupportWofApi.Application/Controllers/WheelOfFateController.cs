@@ -16,8 +16,7 @@ namespace RgSupportWofApi.Application.Controllers
         [HttpGet]
         public IActionResult Get() 
         {
-            DateTime date = DateTime.Now;
-            return new JsonResult(wheelOfFateService.SpinTheWheel(date));
+            return new JsonResult(wheelOfFateService.SpinTheWheel());
         }
     }
 }

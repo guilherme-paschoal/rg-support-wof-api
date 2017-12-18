@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using RgSupportWofApi.Application.Model;
 using System.Linq;
-
 using Microsoft.EntityFrameworkCore;
 using RgSupportWofApi.Application.Helpers;
 
@@ -42,8 +41,13 @@ namespace RgSupportWofApi.Application.Data.Repositories
         {
             var engineerIds = db.Shifts.Where(x => x.Date == date.ResetTime()).Select(s=>s.Engineer.Id);
 
-            return db.Engineers.Include(e => e.Shifts)
+            var engineers = db.Engineers.Include(e => e.Shifts)
                      .Where(e => engineerIds.Contains(e.Id)).Select(e => e).ToList();
+            
+            //Sort shift dates descending
+            engineers.ForEach(e=>e.Shifts.Sort((x, y) => y.Date.CompareTo(x.Date)));
+
+            return engineers;
         }
 
         public IList<Engineer> GetAvailableEngineersSince(DateTime sinceDate, int shiftsPerDay)

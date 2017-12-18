@@ -24,8 +24,8 @@ namespace RgSupportWofApi.Application.Services
             shiftsPerDay = 2;
         }
 
-        public IList<Engineer> SpinTheWheel(DateTime date) {
-
+        public IList<Engineer> SpinTheWheel() {
+            var date = DateTime.Now.ResetTime();
             // Validate if the wheel has been spun today, if so, returns enginers working today
             var engineersWorkingToday = GetEngineersWorkingToday(date);
             if (engineersWorkingToday.Count() == shiftsPerDay)

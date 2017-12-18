@@ -12,8 +12,14 @@ namespace RgSupportWofApi.Application
 {
     public class Program
     {
+
         public static void Main(string[] args)
         {
+
+            var terms = "an,ch";
+
+            var split = terms.Split(",");
+
             BuildWebHost(args).Run();
         }
 
