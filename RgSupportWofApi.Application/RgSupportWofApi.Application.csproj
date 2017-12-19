@@ -9,6 +9,8 @@
     <Folder Include="Helpers\" />
     <Folder Include="Services\Exceptions\" />
     <Folder Include="Middleware\" />
+    <Folder Include="wwwroot\" />
+    <Folder Include="wwwroot\db\" />
   </ItemGroup>
 
   <ItemGroup>
