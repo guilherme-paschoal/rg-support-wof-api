@@ -7,5 +7,6 @@ namespace RgSupportWofApi.Application.Services
     public interface IWheelOfFateService
     {
         IList<Engineer> SpinTheWheel();
+        void ValidateDatabase();
     }
 }

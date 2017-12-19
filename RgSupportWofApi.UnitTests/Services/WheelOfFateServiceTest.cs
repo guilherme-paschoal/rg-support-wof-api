@@ -1,77 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
 using Moq;
+using RgSupportWofApi.Application.Data;
 using RgSupportWofApi.Application.Data.Repositories;
 using RgSupportWofApi.Application.Helpers;
 using RgSupportWofApi.Application.Model;
 using RgSupportWofApi.Application.Services;
+using RgSupportWofApi.UnitTests.Fixtures;
 using Xunit;
 
 namespace RgSupportWofApi.UnitTests.Services
 {
-    public class WheelOfFateServiceTest
+    public class WheelOfFateServiceTest : IClassFixture<EngineerFixture>
     {
+        Mock<DatabaseContext> mockDbContext;
         Mock<EngineerRepository> engineerRepository;
-        Mock<ShiftRepository> shiftRepository;
+        EngineerFixture fixture;
 
-        List<Engineer> mockEngineers;
-        List<Shift> mockShifts;
-
-        DateTime today;
-
-        public WheelOfFateServiceTest() {
-            engineerRepository = new Mock<EngineerRepository>();
-            shiftRepository = new Mock<ShiftRepository>();
-            today = DateTime.Now.ResetTime();
-        }
-
-        List<Engineer> InitializeListOfEngineers(List<Engineer> list) {
-            list = new List<Engineer> {
-                new Engineer { Id = 1, Name = "John Doe" },
-                new Engineer { Id = 2, Name = "Mary Doe" }
-            };
-            return list;
-        }
-
-        List<Shift> InitializeListOfShifts(List<Shift> list)
-        {
-            list = new List<Shift> {
-                new Shift {Id = 1, Date = DateTime.Now.Date, ShiftOrder = 1, Engineer = new Engineer { Id = 1, Name = "John Doe" }},
-                new Shift {Id = 2, Date = DateTime.Now.Date, ShiftOrder = 2, Engineer = new Engineer { Id = 2, Name = "Mary Doe" }} 
-            };
-            return list;
+        public WheelOfFateServiceTest(EngineerFixture fixture) {
+            mockDbContext = new Mock<DatabaseContext>();
+            engineerRepository = new Mock<EngineerRepository>(mockDbContext.Object);
+            this.fixture = fixture;
         }
 
         [Fact]
-        public void ShouldReturnEngineersWorkingTodayIfTheWheelHasAlreadyBeenSpun() {
-           
-            mockShifts = InitializeListOfShifts(mockShifts);
-            shiftRepository.Setup(x => x.GetByDate(today)).Returns(mockShifts);
-
-            var engineers = new WheelOfFateService(engineerRepository.Object, shiftRepository.Object).SpinTheWheel();
-
-            Assert.Equal(2, engineers.Count);
+        public void ShouldReturnEngineersAlreadyWorkingToday() {
+            var engineers = fixture.GetNewListOfEnginers();
+            engineerRepository.Setup(x => x.GetByShiftDate(It.Is<DateTime>(d => d.CompareTo(DateTime.Now.ResetTime()) == 0))).Returns(engineers);
+            var result = new WheelOfFateService(engineerRepository.Object, 2).SpinTheWheel();
+            Assert.Equal(engineers, result);
         }
 
         [Fact]
-        public void ShouldGetListOfAvailableEngineers() {
+        public void ShouldGetListOfEngineersThatWillWorkToday() {
 
-            //var engineer1 = new Engineer() { Name = "John Doe" };
-            //var engineer2 = new Engineer() { Name = "Jack Fast" };
+            // it can be any list of engineers
+            var engineers = fixture.GetNewListOfEnginers();
 
-            //var shift1 = new Shift() { Date = new DateTime(2017, 10, 10), ShiftOrder = 1, Engineer = engineer1 };
-            //var shift2 = new Shift() { Date = new DateTime(2017, 10, 10), ShiftOrder = 2, Engineer = engineer2 };
-            //var shift3 = new Shift() { Date = new DateTime(2017, 10, 11), ShiftOrder = 1 };
-            //var shift4 = new Shift() { Date = new DateTime(2017, 10, 11), ShiftOrder = 2 };
+            // when the service checks if there are engineers with shifts today, it needs to return an empty string so the service can proceed
+            engineerRepository.Setup(x => x.GetByShiftDate(It.Is<DateTime>(d => d.CompareTo(DateTime.Now.ResetTime()) == 0))).Returns(new List<Engineer>());
 
-            //Mock<EngineerRepository> engineerRepository = new Mock<EngineerRepository>();
-            //Mock<ShiftRepository> shiftRepository = new Mock<ShiftRepository>();
+            // return whatever list of engineers
+            engineerRepository.Setup(x => x.GetAvailableEngineersSince(It.IsAny<DateTime>(), It.IsAny<int>())).Returns(engineers);
 
-            ////engineerRepository.Setup();
+            // the service should return a List of engineers with 2 (shifts per day) engineers selected randomly
+            var result = new WheelOfFateService(engineerRepository.Object, 2).SpinTheWheel();
 
-            //var subject = new WheelOfFateService(engineerRepository.Object, shiftRepository.Object);
-
-            //subject.GetAvailableEngineers();
+            // Check if there are really 2
+            Assert.Equal(2, result.Count);
+          
+            foreach(var item in result) {
+                // for each one returned check if the date is today
+                Assert.Equal(0, DateTime.Now.ResetTime().CompareTo(item.Shifts[0].Date));
+            }
 
         }
     }

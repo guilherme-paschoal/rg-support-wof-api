@@ -16,6 +16,10 @@ namespace RgSupportWofApi.Application.Model
         public string Name { get; set; }
         public List<Shift> Shifts { get; private set; }
 
+        public void AddShift(int shiftOrder) {
+            AddShift(DateTime.Now, shiftOrder);
+        }
+
         public void AddShift(DateTime date, int shiftOrder) 
         {
             Shifts.Add(new Shift{

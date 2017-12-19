@@ -19,6 +19,8 @@
     <Folder Include="Model\" />
     <Folder Include="Services\" />
     <Folder Include="TestHelpers\" />
+    <Folder Include="Fixtures\" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\RgSupportWofApi.Application\RgSupportWofApi.Application.csproj" />

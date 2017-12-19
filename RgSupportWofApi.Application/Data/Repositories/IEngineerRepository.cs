@@ -6,7 +6,6 @@ namespace RgSupportWofApi.Application.Data.Repositories
 {
     public interface IEngineerRepository
     {
-        Engineer Add(Engineer model);
         void Update(Engineer model);
         IList<Engineer> GetAll();
         int CountAll();
