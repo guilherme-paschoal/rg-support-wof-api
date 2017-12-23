@@ -16,7 +16,7 @@ namespace RgSupportWofApi.Application.Controllers
         [HttpGet]
         public IActionResult Get() 
         {
-            wheelOfFateService.ValidateDatabase();
+            //wheelOfFateService.ValidateDatabase();
             return new JsonResult(wheelOfFateService.SpinTheWheel());
         }
     }

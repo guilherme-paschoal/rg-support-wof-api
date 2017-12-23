@@ -4,8 +4,8 @@ using RgSupportWofApi.Application.Model;
 
 namespace RgSupportWofApi.Application.Services
 {
-    public interface IWheelOfFateService
+    public interface IEngineerService
     {
-        IList<Engineer> SpinTheWheel();
+        IList<Engineer> GetAvailableEngineers(IList<Shift> shifts, int shiftsPerDay);
     }
 }

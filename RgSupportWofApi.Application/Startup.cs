@@ -36,14 +36,22 @@ namespace RgSupportWofApi.Application
             // Using SQLite for simplicity's sake
             services.AddDbContext<DatabaseContext>(options => options.UseSqlite(connection).UseLoggerFactory(MyLoggerFactory));
 
-            services.AddTransient<IEngineerRepository, EngineerRepository>();
-            services.AddTransient<IWheelOfFateService>(x=> new WheelOfFateService(
-                                                           x.GetRequiredService<IEngineerRepository>(),
-                                                           shiftsPerDayConfig));
+            services.AddSingleton<IDbValidationService, DbValidationService>();
 
+            services.AddSingleton<IEngineerService, EngineerService>();
+
+            services.AddTransient<IShiftService, ShiftService>();
+
+            services.AddTransient<IEngineerRepository, EngineerRepository>();
+
+            services.AddTransient<IShiftRepository, ShiftRepository>();
+
+            services.AddTransient<IWheelOfFateService>(x=> new WheelOfFateService(
+                x.GetRequiredService<IShiftService>(), x.GetRequiredService<IEngineerService>(), shiftsPerDayConfig));
+            
             // The JsonOptions below are due to: https://stackoverflow.com/questions/39024354/asp-net-core-api-only-returning-first-result-of-list
             // In other words: It's for serializing circular references ( Engineer > Shifts > Engineer )
-            services.AddMvc().AddJsonOptions(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+            // services.AddMvc().AddJsonOptions(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
