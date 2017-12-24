@@ -10,31 +10,31 @@ namespace RgSupportWofApi.Application.Services
     public class ShiftService : IShiftService
     {
         readonly IShiftRepository shiftRepository;
-        readonly IEngineerRepository engineerRepository;
 
-        public ShiftService(IShiftRepository shiftRepository, IEngineerRepository engineerRepository)
+        public ShiftService(IShiftRepository shiftRepository)
         {
             this.shiftRepository = shiftRepository;
-            this.engineerRepository = engineerRepository;
         }
 
-        public IList<Shift> GetTodaysShifts() => shiftRepository.GetShiftsSince(DateTimeUtils.Today).OrderBy(s => s.ShiftOrder).ToList();
+        public IList<Shift> GetTodaysShifts()
+        {
+            return shiftRepository.GetShiftsSince(DateTimeUtils.Today).OrderBy(s => s.ShiftOrder).ToList();
+        }
 
-        public IList<Shift> GetShiftsInCurrentPeriod() => shiftRepository.GetShiftsSince(GetSearchPeriodStartDate()).ToList();
-
-        DateTime GetSearchPeriodStartDate()
+        public IList<Shift> GetShiftsInCurrentPeriod(int daysInPeriod) 
         {
             // Having E = amount of engineers,
             // The number of days in a work period is the same as E because we are limiting the shifts per day to be a dividend of E
             // This way, we can guarantee that every E days is a work period meaning the search period to search for engineers for today is E - 1 
-            return DateTime.Now.AddDays(engineerRepository.CountAll() - 1 * -1).ResetTime();
+            var startDate = DateTime.Now.SubtractDays(daysInPeriod).ResetTime();
+
+            return shiftRepository.GetShiftsSince(startDate).OrderByDescending(s => s.Date).ThenBy(s=>s.ShiftOrder).ToList();
         }
 
-
-        // I didn't want to let Wheel Of Fate Service have a dependency on shift repository so I wrapped this add call in this service class
-        public void InsertShift(Shift shift) 
+        // I didn't want to let Wheel Of Fate Service have a dependency on shift repository so I wrapped these repository calls this service class
+        public Shift InsertShift(Shift shift) 
         {
-            shiftRepository.Add(shift);
+            return shiftRepository.Add(shift);
         }
 
         public void SaveShifts() 

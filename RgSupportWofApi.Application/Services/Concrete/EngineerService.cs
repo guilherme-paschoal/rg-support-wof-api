@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using RgSupportWofApi.Application.Data.Repositories;
 using RgSupportWofApi.Application.Helpers;
 using RgSupportWofApi.Application.Model;
 
@@ -7,34 +8,31 @@ namespace RgSupportWofApi.Application.Services
 {
     public class EngineerService : IEngineerService
     {
+        readonly IEngineerRepository engineerRepository;
+
+        public EngineerService(IEngineerRepository engineerRepository) 
+        {
+            this.engineerRepository = engineerRepository;
+        }
+
+        public int GetEngineerCount() 
+        {
+            return engineerRepository.CountAll();
+        }
+
         public IList<Engineer> GetAvailableEngineers(IList<Shift> shifts, int shiftsPerDay) 
         {
             var control = true;
-            var availableEngineers = new List<Engineer>();
+            var removeEngineers = new List<int>();
+
+            // calculate engineer ids that AREN'T available
             foreach(Shift s in shifts)
             {
-                control &= (s.Date.Date < DateTimeUtils.Yesterday || shifts.Count(x => x.Engineer.Id == s.Id) < shiftsPerDay);
-                if(control) { availableEngineers.Add(s.Engineer); }
+                control &= (s.Date.Date > DateTimeUtils.Yesterday || shifts.Count(x => x.Engineer.Id == s.Engineer.Id) >= shiftsPerDay);
+                if(control) { removeEngineers.Add(s.Engineer.Id); }
             }
 
-            return availableEngineers;
-            
-            // Gets all shifts since begining of period - this is the only database query
-            //var shifts = shiftRepository.GetShiftsSince(startDate);
-
-            // 3 business rules are covered in this linq query
-            // 1 - Can't get engineers that are working today 
-            // 2 - Can't get engineers that worked yesterday (Because they can't work shits on consecutive days)
-            // 3 - Can't get engineers that worked a full day since the begining of the period
-            //return (from shift in shifts
-                    //where shift.Date.Date < DateTimeUtils.Yesterday 
-                    //&& (shifts.GroupBy(x => x.Engineer.Id).Where(x => x.Count() < shiftsPerDay).Select(x => x.Key)).Contains(shift.Engineer.Id)
-                    //select shift.Engineer).ToList();
-            
-            //var engineersThatWorkedYesterday = shifts.Where(x => x.Date.Date == DateTimeUtils.Yesterday.Date).Select(x => x.Engineer);
-            //var engineersThatWorkedAFullDay = shifts.GroupBy(x => x.Engineer.Id).Where(x => x.Count() > 1).Select(x => x.Key);
-
+            return engineerRepository.GetAll().Where(x => !removeEngineers.Contains(x.Id)).ToList();
         }
-
     }
 }

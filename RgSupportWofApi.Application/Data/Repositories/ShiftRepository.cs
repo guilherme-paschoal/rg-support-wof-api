@@ -15,9 +15,9 @@ namespace RgSupportWofApi.Application.Data.Repositories
             this.db = db;
         }
 
-        public void Add(Shift shift) 
+        public Shift Add(Shift shift) 
         {
-            db.Add(shift);
+            return db.Add(shift).Entity;
         }
 
         public void Save()

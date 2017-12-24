@@ -26,29 +26,29 @@ namespace RgSupportWofApi.UnitTests.Services
             engineerRepository.Setup(x => x.CountAll()).Returns(4);
         }
 
-        [Fact]
-        public void ShouldGetAvailableEngineers()
-        {
-            var engineers = new EngineerFixture().GetNewListOfEnginers();
-            var shifts = new List<Shift>
-            {
-                new Shift { Date = DateFixture.ThreeDaysAgo, ShiftOrder = 2, Engineer = engineers[3] },
-                new Shift { Date = DateFixture.ThreeDaysAgo, ShiftOrder = 1, Engineer = engineers[0] },
-                new Shift { Date = DateFixture.TwoDaysAgo, ShiftOrder = 2, Engineer = engineers[1] },
-                new Shift { Date = DateFixture.TwoDaysAgo, ShiftOrder = 1, Engineer = engineers[2] },
-                new Shift { Date = DateFixture.Yesterday, ShiftOrder = 1, Engineer = engineers[0] },
-                new Shift { Date = DateFixture.Yesterday, ShiftOrder = 2, Engineer = engineers[3] }
-            };
+        //[Fact]
+        //public void ShouldGetAvailableEngineers()
+        //{
+        //    var engineers = new EngineerFixture().GetNewListOfEnginers();
+        //    var shifts = new List<Shift>
+        //    {
+        //        new Shift { Date = DateFixture.ThreeDaysAgo, ShiftOrder = 2, Engineer = engineers[3] },
+        //        new Shift { Date = DateFixture.ThreeDaysAgo, ShiftOrder = 1, Engineer = engineers[0] },
+        //        new Shift { Date = DateFixture.TwoDaysAgo, ShiftOrder = 2, Engineer = engineers[1] },
+        //        new Shift { Date = DateFixture.TwoDaysAgo, ShiftOrder = 1, Engineer = engineers[2] },
+        //        new Shift { Date = DateFixture.Yesterday, ShiftOrder = 1, Engineer = engineers[0] },
+        //        new Shift { Date = DateFixture.Yesterday, ShiftOrder = 2, Engineer = engineers[3] }
+        //    };
 
-            var startDateMustBe = DateTime.Now.SubtractDays(3);
+        //    var startDateMustBe = DateTime.Now.SubtractDays(3);
 
-            shiftRepository.Setup(x => x.GetShiftsSince(It.Is<DateTime>(y => y.Date == startDateMustBe))).Returns(shifts);
+        //    shiftRepository.Setup(x => x.GetShiftsSince(It.Is<DateTime>(y => y.Date == startDateMustBe))).Returns(shifts);
             
-            var availables = new EngineerService(shiftRepository.Object, engineerRepository.Object).GetAvailableEngineers(DateFixture.ThreeDaysAgo, 2);
+        //    var availables = new EngineerService(shiftRepository.Object, engineerRepository.Object).GetAvailableEngineers(DateFixture.ThreeDaysAgo, 2);
 
-            Assert.Equal(2, engineers.Count());
-            Assert.True(engineers.Any(x => x.Id == 2));
-            Assert.True(engineers.Any(x => x.Id == 3));
-        }
+        //    Assert.Equal(2, engineers.Count());
+        //    Assert.True(engineers.Any(x => x.Id == 2));
+        //    Assert.True(engineers.Any(x => x.Id == 3));
+        //}
     }
 }

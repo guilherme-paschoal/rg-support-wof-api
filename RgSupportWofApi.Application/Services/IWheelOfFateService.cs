@@ -6,6 +6,6 @@ namespace RgSupportWofApi.Application.Services
 {
     public interface IWheelOfFateService
     {
-        IList<Engineer> SpinTheWheel();
+        IList<Shift> SpinTheWheel();
     }
 }

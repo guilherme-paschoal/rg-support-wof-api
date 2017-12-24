@@ -7,7 +7,7 @@ namespace RgSupportWofApi.Application.Data.Repositories
     public interface IShiftRepository
     {
         IList<Shift> GetShiftsSince(DateTime date);
-        void Add(Shift shift);
+        Shift Add(Shift shift);
         void Save();
     }
 }

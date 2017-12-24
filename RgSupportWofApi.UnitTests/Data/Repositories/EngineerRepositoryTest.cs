@@ -1,12 +1,8 @@
 ﻿using Xunit;
 using Moq;
-using RgSupportWofApi.Application.Model;
 using RgSupportWofApi.Application.Data;
-using System.Collections.Generic;
-using System;
 using RgSupportWofApi.UnitTests.TestHelpers;
 using RgSupportWofApi.Application.Data.Repositories;
-using RgSupportWofApi.Application.Helpers;
 using System.Linq;
 using RgSupportWofApi.UnitTests.Fixtures;
 
@@ -14,18 +10,30 @@ namespace RgSupportWofApi.UnitTests.Data.Repositories
 {
     public class EngineerRepositoryTest : IClassFixture<EngineerFixture>
     {
-        //EngineerFixture fixture;
-        //Mock<DatabaseContext> mockDbContext;
-        //EngineerRepository engineerRepository;
-  
-        //public EngineerRepositoryTest(EngineerFixture fixture) {
-        //    this.fixture = fixture;
-        //    mockDbContext = new Mock<DatabaseContext>();
-        //    engineerRepository = new EngineerRepository(mockDbContext.Object);
-        //}
+        EngineerFixture fixture;
+        readonly Mock<DatabaseContext> mockDbContext;
 
-        //// For development speed reasons, I wont write tests for simple/wrapper methods like Add/Update/GetAll methods
-        //// In a real world situation I would, indeed test those methods too even if they are really simple
+        public EngineerRepositoryTest(EngineerFixture fixture) {
+            this.fixture = fixture;
+            mockDbContext = new Mock<DatabaseContext>();
+            mockDbContext.Setup(x => x.Engineers).ReturnsDbSet(fixture.GetNewListOfEnginers());
+        }
+
+        [Fact]
+        public void ShouldReturnAllEngineers() 
+        {
+            var repository = new EngineerRepository(mockDbContext.Object);
+            var engineers = repository.GetAll();
+            Assert.Equal(4, engineers.Count());
+        }
+
+        [Fact]
+        public void ShouldReturnCountAllEngineers() 
+        {
+            var repository = new EngineerRepository(mockDbContext.Object);
+            var count = repository.CountAll();
+            Assert.Equal(4, count);
+        }
 
         //private List<Engineer> ActToGetAvailableEngineers(DateTime date, List<Engineer> fixtureData, int shiftsPerDay = 2) {
             

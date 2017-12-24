@@ -18,7 +18,6 @@ namespace RgSupportWofApi.Application.Services
 
         public WheelOfFateService(IShiftService shiftService, IEngineerService engineerService, int shiftsPerDay)
         {
-            //this.engineerRepository = engineerRepository;
             this.shiftService = shiftService;
             this.engineerService = engineerService;
             this.shiftsPerDay = shiftsPerDay;
@@ -28,40 +27,42 @@ namespace RgSupportWofApi.Application.Services
         /// Spins the Wheel obtaning the Engineers that are going to work in the current day.
         /// </summary>
         /// <returns> List of Engineers that are going to work in the current day </returns>
-        public IList<Engineer> SpinTheWheel()
+        public IList<Shift> SpinTheWheel()
         {
-            List<Engineer> engineersWorkingToday;
+            List<Shift> todaysShifts;
 
             // Validate if the wheel has been spun today, if so, returns enginers working today
-            engineersWorkingToday = shiftService.GetTodaysShifts().Select(x => x.Engineer).ToList();
+            todaysShifts = shiftService.GetTodaysShifts().ToList();
 
-
-            if (!engineersWorkingToday.Any())
+            if (!todaysShifts.Any())
             {
-
-                var availableEngineers = engineerService.GetAvailableEngineers(shiftService.GetShiftsInCurrentPeriod(), shiftsPerDay);
+                var availableEngineers = engineerService.GetAvailableEngineers(shiftService.GetShiftsInCurrentPeriod(GetDaysInCurrentPeriod()), shiftsPerDay);
 
                 for (int i = 1; i <= shiftsPerDay; i++)
                 {
                     var randomIndex = new Random(DateTime.Now.Millisecond).Next(0, availableEngineers.Count());
                     var randomEngineer = availableEngineers[randomIndex];
-
-                    shiftService.InsertShift(new Shift
-                    {
-                        Date = DateTimeUtils.Today,
-                        Engineer = randomEngineer,
-                        ShiftOrder = i
-                    });
-
                     availableEngineers.RemoveAt(randomIndex);
-                    engineersWorkingToday.Add(randomEngineer);
+
+                    todaysShifts.Add(
+                        shiftService.InsertShift(new Shift {
+                            Date = DateTimeUtils.Today,
+                            Engineer = randomEngineer,
+                            ShiftOrder = i
+                        })
+                    );
                 }
 
+                shiftService.SaveShifts();
             }
 
-            return engineersWorkingToday;
+            return todaysShifts;
 
         }
 
+        int GetDaysInCurrentPeriod()
+        {
+            return engineerService.GetEngineerCount() - 1;
+        }
     }
 }

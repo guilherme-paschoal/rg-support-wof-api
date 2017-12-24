@@ -6,6 +6,8 @@ namespace RgSupportWofApi.Application.Services
 {
     public interface IEngineerService
     {
+        int GetEngineerCount();
+
         IList<Engineer> GetAvailableEngineers(IList<Shift> shifts, int shiftsPerDay);
     }
 }

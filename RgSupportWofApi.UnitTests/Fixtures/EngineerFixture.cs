@@ -21,8 +21,8 @@ namespace RgSupportWofApi.UnitTests.Fixtures
         {
             InitializeDates();
             InitializeEngineersWithoutShifts();
-            InitializeEngineersWithShifts();
-            InitializeEngineersWorkingToday();
+            //InitializeEngineersWithShifts();
+            //InitializeEngineersWorkingToday();
         }
 
         private void InitializeDates() {
@@ -46,30 +46,30 @@ namespace RgSupportWofApi.UnitTests.Fixtures
             EngineersWithoutShifts = GetNewListOfEnginers();
         }
 
-        private void InitializeEngineersWithShifts()
-        {
-            EngineersWithShifts = GetNewListOfEnginers();
+        //private void InitializeEngineersWithShifts()
+        //{
+        //    EngineersWithShifts = GetNewListOfEnginers();
 
-            EngineersWithShifts[2].AddShift(fourDaysAgo, 1);
-            EngineersWithShifts[1].AddShift(fourDaysAgo, 2);
+        //    EngineersWithShifts[2].AddShift(fourDaysAgo, 1);
+        //    EngineersWithShifts[1].AddShift(fourDaysAgo, 2);
 
-            EngineersWithShifts[3].AddShift(threeDaysAgo, 2);
-            EngineersWithShifts[0].AddShift(threeDaysAgo, 1);
+        //    EngineersWithShifts[3].AddShift(threeDaysAgo, 2);
+        //    EngineersWithShifts[0].AddShift(threeDaysAgo, 1);
 
-            EngineersWithShifts[1].AddShift(twoDaysAgo, 2);
-            EngineersWithShifts[2].AddShift(twoDaysAgo, 1);
+        //    EngineersWithShifts[1].AddShift(twoDaysAgo, 2);
+        //    EngineersWithShifts[2].AddShift(twoDaysAgo, 1);
 
-            EngineersWithShifts[0].AddShift(yesterday, 1);
-            EngineersWithShifts[3].AddShift(yesterday, 2);
-        }
+        //    EngineersWithShifts[0].AddShift(yesterday, 1);
+        //    EngineersWithShifts[3].AddShift(yesterday, 2);
+        //}
 
 
-        private void InitializeEngineersWorkingToday()
-        {
-            EngineersWorkingYesterdayAndToday = GetNewListOfEnginers();
-            EngineersWorkingYesterdayAndToday[0].AddShift(yesterday, 1);
-            EngineersWorkingYesterdayAndToday[1].AddShift(today, 1);
-        }
+        //private void InitializeEngineersWorkingToday()
+        //{
+        //    EngineersWorkingYesterdayAndToday = GetNewListOfEnginers();
+        //    EngineersWorkingYesterdayAndToday[0].AddShift(yesterday, 1);
+        //    EngineersWorkingYesterdayAndToday[1].AddShift(today, 1);
+        //}
 
         public void Dispose()
         {
