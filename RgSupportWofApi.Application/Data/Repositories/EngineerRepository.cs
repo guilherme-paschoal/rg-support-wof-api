@@ -14,7 +14,7 @@ namespace RgSupportWofApi.Application.Data.Repositories
             db = dbContext;
         }
 
-        public IList<Engineer> GetAll()
+        public virtual IList<Engineer> GetAll()
         {
             return db.Engineers.ToList();
         }

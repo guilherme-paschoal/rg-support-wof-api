@@ -25,7 +25,7 @@ namespace RgSupportWofApi.Application.Data.Repositories
             db.SaveChanges();
         }
 
-        public IList<Shift> GetShiftsSince(DateTime date)
+        public virtual IList<Shift> GetShiftsSince(DateTime date)
         {
             return db.Shifts.Include(s => s.Engineer).Where(s => s.Date >= date).ToList();
         }
