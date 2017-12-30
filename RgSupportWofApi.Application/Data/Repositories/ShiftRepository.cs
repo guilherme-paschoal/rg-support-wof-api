@@ -25,6 +25,20 @@ namespace RgSupportWofApi.Application.Data.Repositories
             db.SaveChanges();
         }
 
+        public virtual IList<Shift> Filter(DateTime date, int engineerId) {
+            var query = db.Shifts.Include(s => s.Engineer).Where(x => true);
+
+            if(date != DateTime.MinValue) {
+                query = query.Where(s => s.Date >= date);
+            }
+
+            if(engineerId > 0) {
+                query = query.Where(s => s.Engineer.Id >= engineerId);
+            }
+
+            return query.ToList();
+        }
+
         public virtual IList<Shift> GetShiftsSince(DateTime date)
         {
             return db.Shifts.Include(s => s.Engineer).Where(s => s.Date >= date).ToList();

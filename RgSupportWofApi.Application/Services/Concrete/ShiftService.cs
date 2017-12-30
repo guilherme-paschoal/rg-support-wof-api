@@ -16,6 +16,11 @@ namespace RgSupportWofApi.Application.Services
             this.shiftRepository = shiftRepository;
         }
 
+        public IList<Shift> GetShiftsSinceDate(DateTime date)
+        {
+            return shiftRepository.GetShiftsSince(date.ResetTime()).OrderBy(s => s.Date).ThenBy(s => s.ShiftOrder).ToList();
+        }
+
         public IList<Shift> GetTodaysShifts()
         {
             return shiftRepository.GetShiftsSince(DateTimeUtils.Today).OrderBy(s => s.ShiftOrder).ToList();

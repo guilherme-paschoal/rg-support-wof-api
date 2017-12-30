@@ -16,7 +16,7 @@ namespace RgSupportWofApi.Application.Data.Repositories
 
         public virtual IList<Engineer> GetAll()
         {
-            return db.Engineers.ToList();
+            return db.Engineers.OrderBy(x=>x.Name).ToList();
         }
 
         public virtual int CountAll()
