@@ -11,6 +11,9 @@
     <Folder Include="Middleware\" />
     <Folder Include="wwwroot\" />
     <Folder Include="wwwroot\db\" />
+    <Folder Include="Data\" />
+    <Folder Include="Data\Repositories\" />
+    <Folder Include="Services\Concrete\" />
   </ItemGroup>
 
   <ItemGroup>

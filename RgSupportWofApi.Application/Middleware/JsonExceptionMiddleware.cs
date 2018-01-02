@@ -23,6 +23,7 @@ namespace RgSupportWofApi.Application.Middleware
             };
 
             httpContext.Response.ContentType = "application/json";
+            httpContext.Response.Headers.Add("Access-Control-Allow-Origin", "*");
 
             using (var writer = new StreamWriter(httpContext.Response.Body))
             {

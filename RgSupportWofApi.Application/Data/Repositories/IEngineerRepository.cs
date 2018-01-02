@@ -6,10 +6,10 @@ namespace RgSupportWofApi.Application.Data.Repositories
 {
     public interface IEngineerRepository
     {
-        void Update(Engineer model);
+        //void Update(Engineer model);
         IList<Engineer> GetAll();
         int CountAll();
-        IList<Engineer> GetAvailableEngineersSince(DateTime sinceDate, int shiftsPerDay);
-        IList<Engineer> GetByShiftDate(DateTime date);
+        //IList<Engineer> GetAvailableEngineersSince(DateTime sinceDate, int shiftsPerDay);
+        //IList<Engineer> GetByShiftDate(DateTime date);
     }
 }

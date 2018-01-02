@@ -36,28 +36,30 @@ namespace RgSupportWofApi.Application
             // Using SQLite for simplicity's sake
             services.AddDbContext<DatabaseContext>(options => options.UseSqlite(connection).UseLoggerFactory(MyLoggerFactory));
 
+            services.AddTransient<IEngineerService, EngineerService>();
+            services.AddTransient<IShiftService, ShiftService>();
             services.AddTransient<IEngineerRepository, EngineerRepository>();
+            services.AddTransient<IShiftRepository, ShiftRepository>();
             services.AddTransient<IWheelOfFateService>(x=> new WheelOfFateService(
-                                                           x.GetRequiredService<IEngineerRepository>(),
-                                                           shiftsPerDayConfig));
-
-            // The JsonOptions below are due to: https://stackoverflow.com/questions/39024354/asp-net-core-api-only-returning-first-result-of-list
-            // In other words: It's for serializing circular references ( Engineer > Shifts > Engineer )
-            services.AddMvc().AddJsonOptions(options => options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
+                x.GetRequiredService<IShiftService>(), x.GetRequiredService<IEngineerService>(), shiftsPerDayConfig));
+            services.AddTransient<IDbValidationService, DbValidationService>(x => new DbValidationService(
+                x.GetRequiredService<IEngineerRepository>(), shiftsPerDayConfig));
+            
+            services.AddMvc();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            // I got this excelent middleware from some answer in stackoverflow... Can't give credits right now
+            // I got this excelent middleware from some answer in stackoverflow... Can't remember the link to give credits though :(
             app.UseExceptionHandler(new ExceptionHandlerOptions
             {
                 ExceptionHandler = new JsonExceptionMiddleware().Invoke
             });
 
             // Allows the React client to call this application from a different domain/port 
-            // (when running in localhost, a different por is enough to make it a different domain)
-            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); // safety? what for? :)
+            // (when running in localhost, a different port is enough to make it a different domain)
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); // open to all origins... safety? what for? :)
 
             app.UseMvcWithDefaultRoute();
         }
