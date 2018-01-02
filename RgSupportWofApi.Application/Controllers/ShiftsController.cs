@@ -23,7 +23,7 @@ namespace RgSupportWofApi.Application.Controllers
         }
 
         public IActionResult Filter(DateTime date, int engineerId) {
-            return new JsonResult(shiftRepository.Filter(date, engineerId));
+                return new JsonResult(shiftRepository.Filter(date, engineerId));
         }
     }
 }

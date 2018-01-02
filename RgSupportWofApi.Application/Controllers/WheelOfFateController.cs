@@ -7,16 +7,18 @@ namespace RgSupportWofApi.Application.Controllers
     public class WheelOfFateController
     {
         readonly IWheelOfFateService wheelOfFateService;
+        readonly IDbValidationService dbValidationService;
 
-        public WheelOfFateController(IWheelOfFateService wheelOfFateService)
+        public WheelOfFateController(IWheelOfFateService wheelOfFateService, IDbValidationService dbValidationService)
         {
             this.wheelOfFateService = wheelOfFateService;
+            this.dbValidationService = dbValidationService;
         }
 
         [HttpGet]
         public IActionResult Get() 
         {
-            //wheelOfFateService.ValidateDatabase();
+            dbValidationService.ValidateDatabase();
             return new JsonResult(wheelOfFateService.SpinTheWheel());
         }
     }

@@ -33,7 +33,7 @@ namespace RgSupportWofApi.Application.Data.Repositories
             }
 
             if(engineerId > 0) {
-                query = query.Where(s => s.Engineer.Id >= engineerId);
+                query = query.Where(s => s.Engineer.Id == engineerId);
             }
 
             return query.ToList();
